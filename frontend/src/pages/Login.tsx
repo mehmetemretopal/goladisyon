@@ -15,7 +15,7 @@ const Login: React.FC<LoginProps> = ({ setUser }) => {
   const navigate = useNavigate();
 
   const handleRoleChange = (
-    event: React.MouseEvent<HTMLElement>,
+    _event: React.MouseEvent<HTMLElement>,
     newRole: 'garson' | 'mutfak' | 'admin' | null,
   ) => {
     if (newRole !== null) {

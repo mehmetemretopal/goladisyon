@@ -23,17 +23,29 @@ const Login: React.FC<LoginProps> = ({ setUser }) => {
     }
   };
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     if (username && password) {
-      let dName = "";
-      if (username === 'admin') dName = 'Sistem Yöneticisi';
-      else if (username === 'garson_aile') dName = 'Aile Bölümü';
-      else if (username === 'garson_kadin') dName = 'Kadın Bölümü';
-      else if (username === 'garson_erkek') dName = 'Erkek Bölümü';
+      try {
+        const response = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ username, password }),
+        });
 
-      setUser({ username, role, displayName: dName });
-      navigate('/dashboard');
+        if (response.ok) {
+          const data = await response.json();
+          setUser({ username: data.username, role: data.role, displayName: data.displayName });
+          navigate('/dashboard');
+        } else {
+          alert('Giriş başarısız. Kullanıcı adı veya şifre hatalı.');
+        }
+      } catch (error) {
+        console.error('Login error:', error);
+        alert('Sunucuya bağlanılamadı.');
+      }
     }
   };
 

@@ -32,4 +32,7 @@ public class AppUser {
 
     @Column(name = "created_at")
     private LocalDateTime createdAt = LocalDateTime.now();
+
+    @Column(name = "table_count", columnDefinition = "integer default 10")
+    private Integer tableCount = 10;
 }

@@ -7,7 +7,12 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'https://goladisyon.onrender.com',
+        target: 'http://localhost:8080',
+        changeOrigin: true
+      },
+      '/ws-adisyon': {
+        target: 'http://localhost:8080',
+        ws: true,
         changeOrigin: true
       }
     }

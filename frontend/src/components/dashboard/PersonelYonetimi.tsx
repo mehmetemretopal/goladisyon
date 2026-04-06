@@ -9,16 +9,55 @@ interface Props {
 
 const PersonelYonetimi: React.FC<Props> = ({ personnels, setPersonnels }) => {
   const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [displayName, setDisplayName] = useState('');
   const [role, setRole] = useState('garson');
   const [tableCount, setTableCount] = useState<number | ''>(10);
 
-  const handleAdd = () => {
-    if (username && displayName && tableCount !== '') {
-      setPersonnels([...personnels, { id: Date.now(), username, displayName, role, tableCount: Number(tableCount) }]);
-      setUsername('');
-      setDisplayName('');
-      setTableCount(10);
+  // Fetch users from backend on component mount
+  React.useEffect(() => {
+    fetch('/api/users')
+      .then(res => res.json())
+      .then(data => {
+        // Integrate with existing personnel state
+        setPersonnels(data.map((u: any) => ({
+          id: u.id,
+          username: u.username,
+          displayName: u.displayName,
+          role: u.role,
+          tableCount: u.tableCount || 10
+        })));
+      })
+      .catch(err => console.error("Could not fetch users", err));
+  }, []);
+
+  const handleAdd = async () => {
+    if (username && displayName && tableCount !== '' && password) {
+      try {
+        const res = await fetch('/api/users', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password, displayName, role, tableCount: Number(tableCount) })
+        });
+        if (res.ok) {
+          const newUser = await res.json();
+          setPersonnels([...personnels, { 
+            id: newUser.id, username: newUser.username, displayName: newUser.displayName, 
+            role: newUser.role, tableCount: Number(tableCount) 
+          }]);
+          setUsername('');
+          setPassword('');
+          setDisplayName('');
+          setTableCount(10);
+        } else {
+          alert('Kullanıcı eklenemedi.');
+        }
+      } catch (err) {
+        console.error(err);
+        alert('Sunucu hatası.');
+      }
+    } else {
+      alert('Lütfen tüm alanları doldurun.');
     }
   };
 
@@ -35,8 +74,9 @@ const PersonelYonetimi: React.FC<Props> = ({ personnels, setPersonnels }) => {
       <Card>
         <CardContent>
           <Typography variant="h6" gutterBottom>Yeni Personel Ekle</Typography>
-          <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+          <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
             <TextField label="Kullanıcı Adı" size="small" value={username} onChange={e => setUsername(e.target.value)} />
+            <TextField label="Şifre" size="small" type="password" value={password} onChange={e => setPassword(e.target.value)} />
             <TextField label="Bölümü (Örn: Aile Bölümü)" size="small" value={displayName} onChange={e => setDisplayName(e.target.value)} />
             <FormControl size="small" sx={{ minWidth: 120 }}>
               <InputLabel>Rol</InputLabel>

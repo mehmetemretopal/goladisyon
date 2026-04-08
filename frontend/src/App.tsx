@@ -37,22 +37,78 @@ export interface Order {
 }
 
 function App() {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null>(() => {
+    const savedUser = localStorage.getItem('user');
+    return savedUser ? JSON.parse(savedUser) : null;
+  });
 
-  const [menus, setMenus] = useState<MenuItem[]>([
-    { id: 1, name: 'Çay', category: 'İçecek', price: 15 },
-    { id: 2, name: 'Adana Kebap', category: 'Ana Yemek', price: 350 },
-    { id: 3, name: 'Künefe', category: 'Tatlı', price: 120 }
-  ]);
+  useEffect(() => {
+    if (user) {
+      localStorage.setItem('user', JSON.stringify(user));
+    } else {
+      localStorage.removeItem('user');
+    }
+  }, [user]);
 
-  const [personnels, setPersonnels] = useState<AppUserMock[]>([
-    { id: 1, username: 'admin', displayName: 'Sistem Yöneticisi', role: 'admin', tableCount: 0 },
-    { id: 2, username: 'garson_aile', displayName: 'Aile Bölümü', role: 'garson', tableCount: 8 },
-    { id: 3, username: 'garson_kadin', displayName: 'Kadın Bölümü', role: 'garson', tableCount: 5 },
-    { id: 4, username: 'garson_erkek', displayName: 'Erkek Bölümü', role: 'garson', tableCount: 6 }
-  ]);
+  const [menus, setMenus] = useState<MenuItem[]>(() => {
+    const saved = localStorage.getItem('menus');
+    return saved ? JSON.parse(saved) : [
+      { id: 1, name: 'Çay', category: 'İçecek', price: 15 },
+      { id: 2, name: 'Adana Kebap', category: 'Ana Yemek', price: 350 },
+      { id: 3, name: 'Künefe', category: 'Tatlı', price: 120 }
+    ];
+  });
 
-  const [orders, setOrders] = useState<Order[]>([]);
+  const [personnels, setPersonnels] = useState<AppUserMock[]>(() => {
+    const saved = localStorage.getItem('personnels');
+    return saved ? JSON.parse(saved) : [
+      { id: 1, username: 'admin', displayName: 'Sistem Yöneticisi', role: 'admin', tableCount: 0 },
+      { id: 2, username: 'garson_aile', displayName: 'Aile Bölümü', role: 'garson', tableCount: 8 },
+      { id: 3, username: 'garson_kadin', displayName: 'Kadın Bölümü', role: 'garson', tableCount: 5 },
+      { id: 4, username: 'garson_erkek', displayName: 'Erkek Bölümü', role: 'garson', tableCount: 6 }
+    ];
+  });
+
+  const [orders, setOrders] = useState<Order[]>(() => {
+    const saved = localStorage.getItem('orders');
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem('menus', JSON.stringify(menus));
+  }, [menus]);
+
+  useEffect(() => {
+    localStorage.setItem('personnels', JSON.stringify(personnels));
+  }, [personnels]);
+
+  useEffect(() => {
+    localStorage.setItem('orders', JSON.stringify(orders));
+  }, [orders]);
+
+  useEffect(() => {
+    fetch('/api/products')
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.length > 0) setMenus(data);
+      })
+      .catch(err => console.error(err));
+
+    fetch('/api/users')
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.length > 0) {
+          setPersonnels(data.map((u: any) => ({
+            id: u.id,
+            username: u.username,
+            displayName: u.displayName,
+            role: u.role,
+            tableCount: u.tableCount || 10
+          })));
+        }
+      })
+      .catch(err => console.error(err));
+  }, []);
   const [stompClient, setStompClient] = useState<Client | null>(null);
 
   useEffect(() => {
@@ -100,14 +156,14 @@ function App() {
       <Router>
         <Routes>
           <Route path="/login" element={<Login setUser={setUser} />} />
-          <Route 
-            path="/dashboard/*" 
-            element={user ? <Dashboard 
-              user={user} setUser={setUser} 
+          <Route
+            path="/dashboard/*"
+            element={user ? <Dashboard
+              user={user} setUser={setUser}
               menus={menus} setMenus={setMenus}
               personnels={personnels} setPersonnels={setPersonnels}
               orders={orders} setOrders={broadcastOrders}
-            /> : <Navigate to="/login" />} 
+            /> : <Navigate to="/login" />}
           />
           <Route path="*" element={<Navigate to="/login" />} />
         </Routes>

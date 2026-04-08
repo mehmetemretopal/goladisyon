@@ -34,6 +34,9 @@ const BekleyenSiparisler: React.FC<Props> = ({ orders, setOrders }) => {
                     <Typography variant="h6" fontWeight="bold">Masa: {order.table}</Typography>
                     <Chip size="small" label="Bekliyor" color="error" />
                   </Box>
+                  <Typography variant="body2" sx={{ mb: 1, fontStyle: 'italic', opacity: 0.9 }}>
+                    Garson: {order.garsonName}
+                  </Typography>
                   <Typography variant="subtitle2" sx={{ mb: 1 }}>Siparişler:</Typography>
                   <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5, pl: 1 }}>
                     {order.items.map((item, index) => (

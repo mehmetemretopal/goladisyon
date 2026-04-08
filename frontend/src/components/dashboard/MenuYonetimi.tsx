@@ -12,12 +12,27 @@ const MenuYonetimi: React.FC<Props> = ({ menus, setMenus }) => {
   const [category, setCategory] = useState('');
   const [price, setPrice] = useState('');
 
-  const handleAdd = () => {
+  const handleAdd = async () => {
     if (name && category && price) {
-      setMenus([...menus, { id: Date.now(), name, category, price: Number(price) }]);
-      setName('');
-      setCategory('');
-      setPrice('');
+      try {
+        const res = await fetch('/api/products', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, category, price: Number(price), description: '', isAvailable: true })
+        });
+        if (res.ok) {
+          const newMenu = await res.json();
+          setMenus([...menus, newMenu]);
+          setName('');
+          setCategory('');
+          setPrice('');
+        } else {
+          alert('Ürün eklenemedi.');
+        }
+      } catch (e) {
+        console.error(e);
+        alert('Sunucu hatası.');
+      }
     }
   };
 

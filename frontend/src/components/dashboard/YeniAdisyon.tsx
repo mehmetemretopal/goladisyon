@@ -1,17 +1,18 @@
 import React, { useState } from 'react';
 import { Card, CardContent, Typography, Box, Grid, Button, Divider, List, ListItem, ListItemText, IconButton } from '@mui/material';
 import { AddShoppingCart, Delete, ArrowBack } from '@mui/icons-material';
-import { MenuItem, Order } from '../../App';
+import { AppUserMock, MenuItem, Order } from '../../App';
 
 interface Props {
   tableNo: string;
   menus: MenuItem[];
   orders: Order[];
   setOrders: React.Dispatch<React.SetStateAction<Order[]>>;
+  user: AppUserMock;
   onBack: () => void;
 }
 
-const YeniAdisyon: React.FC<Props> = ({ tableNo, menus, orders, setOrders, onBack }) => {
+const YeniAdisyon: React.FC<Props> = ({ tableNo, menus, orders, setOrders, user, onBack }) => {
   const [cart, setCart] = useState<MenuItem[]>([]);
 
   // Categorize menus
@@ -45,7 +46,7 @@ const YeniAdisyon: React.FC<Props> = ({ tableNo, menus, orders, setOrders, onBac
           table: tableNo,
           items: cart,
           status: 'bekliyor',
-          garsonName: 'garson'
+          garsonName: user.displayName || user.username
         };
         setOrders([...orders, newOrder]);
       }

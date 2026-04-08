@@ -48,6 +48,7 @@ const Masalarim: React.FC<Props> = ({ user, menus, orders, setOrders }) => {
         menus={menus}
         orders={orders}
         setOrders={setOrders}
+        user={user}
         onBack={() => setSelectedTableToOrder(null)}
       />
     );

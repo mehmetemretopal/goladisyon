@@ -85,8 +85,13 @@ const Dashboard: React.FC<DashboardProps> = ({ user, setUser, menus, setMenus, p
   const drawer = (
     <div>
       <Toolbar sx={{ justifyContent: 'center' }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <img src="/logo.png" alt="logo" height={30} onError={(e) => (e.currentTarget.style.display = 'none')} />
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 0.5, py: 2 }}>
+          <img 
+            src="/src/assets/yurtlogo.png" 
+            alt="logo" 
+            style={{ height: '32px', width: 'auto', display: 'block' }} 
+            onError={(e) => (e.currentTarget.style.display = 'none')} 
+          />
           <Typography variant="h6" color="primary" sx={{ fontWeight: 'bold' }}>
             gölAdisyon
           </Typography>
@@ -233,6 +238,11 @@ const Dashboard: React.FC<DashboardProps> = ({ user, setUser, menus, setMenus, p
             {activeTab === 'Hazır Siparişler' && <HazirSiparisler orders={orders} setOrders={setOrders} />}
           </>
         )}
+        <Box sx={{ mt: 'auto', pt: 4, pb: 2, textAlign: 'center' }}>
+          <Typography variant="caption" sx={{ color: 'grey.500', letterSpacing: 1 }}>
+            designed by GÖLEKİP 2026
+          </Typography>
+        </Box>
       </Box>
     </Box>
   );

@@ -22,12 +22,12 @@ const Login: React.FC<LoginProps> = ({ setUser }) => {
       setRole(newRole);
     }
   };
-
+//8080 backend
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     if (username && password) {
       try {
-        const response = await fetch('/api/auth/login', {
+        const response = await fetch('https:///experiment-beds-introducing-reference.trycloudflare.com/api/auth/login', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -60,13 +60,18 @@ const Login: React.FC<LoginProps> = ({ setUser }) => {
       }}
     >
       <Card sx={{ p: 4, width: '100%', maxWidth: 450 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1, mb: 1 }}>
-          <img src="/logo.png" alt="logo" height={40} onError={(e) => (e.currentTarget.style.display = 'none')} />
-          <Typography variant="h4" color="primary" align="center">
-            gölAdisyon
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 0.5, mb: 1 }}>
+          <img 
+            src="/src/assets/yurtlogo.png" 
+            alt="logo" 
+            style={{ height: '30px', width: 'auto', display: 'block' }} 
+            onError={(e) => (e.currentTarget.style.display = 'none')} 
+          />
+          <Typography variant="h5" color="primary" sx={{ fontWeight: 'bold', fontSize: '1.75rem' }}>
+            GölAdisyon
           </Typography>
         </Box>
-        <Typography variant="body2" color="text.secondary" align="center" sx={{ mb: 4 }}>
+        <Typography variant="body2" color="text.secondary" align="center" sx={{ mb: 2 }}>
           Sisteme giriş yapmak için rolünüzü seçin
         </Typography>
 
@@ -75,7 +80,7 @@ const Login: React.FC<LoginProps> = ({ setUser }) => {
           exclusive
           onChange={handleRoleChange}
           fullWidth
-          sx={{ mb: 4 }}
+          sx={{ mb: 2 }}
         >
           <ToggleButton value="garson" aria-label="garson">
             <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -129,6 +134,11 @@ const Login: React.FC<LoginProps> = ({ setUser }) => {
           </Button>
         </form>
       </Card>
+      <Box sx={{ position: 'fixed', bottom: 20, width: '100%', textAlign: 'center' }}>
+        <Typography variant="caption" sx={{ color: 'grey.500', letterSpacing: 1 }}>
+          designed by GÖLEKİP 2026
+        </Typography>
+      </Box>
     </Box>
   );
 };
